@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:include="header :: header"></div>
+<div th:with="curDate = '1999-01-01'">
+<tr th:each="key: ${vos}">
+    <td th:text="${key.get('news').title}"></td>
+    &nbsp;
+    <span th:text="${#dates.format(key.get('news').createDate, 'yyyy-MM-dd')}"></span>
+    &nbsp;
+    <span th:with="keyDate = ${#dates.format(key.get('news').createDate, 'yyyy-MM-dd')}">
+        <div th:if="${curDate} ne ${keyDate}">
+            <span th:text="${keyDate}"></span>
+                <!--如何才能区分keyDate-->
+            </div>
+            <span th:text="${curDate}"></span>
+        </div>
+    </span>
+    &nbsp;
+    <td th:text="${key.get('news').createDate}"></td>
+    &nbsp;&nbsp;
+    <td th:text="${key.get('user').name}"></td>
+    <br/>
+</tr>
+</div>
+</html>

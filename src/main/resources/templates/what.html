@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<!--/*@thymesVar id="name" type="string"*/-->
+<p th:text="${name}">Welcome to our grocery store!
+</p>
+<!--/*@thymesVar id="colors" type="java.util.Arrays"*/-->
+<tr th:each="color: ${colors}">
+    <td th:text="${color}"></td>
+</tr>
+<br></br>
+<!--/*@thymesVar id="map" type="java.util.HashMap"*/-->
+<tr th:each="key,value: ${map}">
+    <!--<td th:text="${key}"></td>-->
+    <td th:text="${value}"></td>
+    <!--/*@thymesVar id="key" type="java.lang.Integer"*/-->
+    <td th:text="${key.key}"></td>
+    <br></br>
+</tr>
+
+<tr th:text="${user.name}"></tr>
+
+<div th:include="footer :: copy"></div>
+
+</body>
+</html>
