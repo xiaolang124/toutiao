@@ -84,7 +84,6 @@ public class UserService {
         LoginTicket ticket = new LoginTicket();
         ticket.setUserId(userId);
         Date date = new Date();
-        logger.info("date" + date.getTime());
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.YEAR , 1);
@@ -93,6 +92,10 @@ public class UserService {
         ticket.setTicket(UUID.randomUUID().toString().replace("-",""));
         loginTicketDAO.addTicket(ticket);
         return ticket.getTicket();
+    }
+
+    public void logout(String ticket){
+        loginTicketDAO.updateStatus(ticket, 1);
     }
 
     public User getUser(int id){
