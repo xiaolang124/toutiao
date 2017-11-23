@@ -23,7 +23,6 @@ CREATE TABLE `news` (
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `login_ticket`;
 CREATE TABLE `login_ticket` (
   `id` INT NOT NULL AUTO_INCREMENT,
