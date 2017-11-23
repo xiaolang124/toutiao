@@ -4,16 +4,15 @@ import com.ty.toutiao.model.HostHolder;
 import com.ty.toutiao.model.News;
 import com.ty.toutiao.service.NewsService;
 import com.ty.toutiao.service.QiniuService;
+import com.ty.toutiao.service.UserService;
 import com.ty.toutiao.util.MyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +30,9 @@ public class NewsController {
 
     @Autowired
     private NewsService newsService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     HostHolder hostHolder;
@@ -100,4 +102,18 @@ public class NewsController {
             logger.error("读取图片错误"+e.getMessage());
         }
     }
+
+    @RequestMapping("/news/{newsId}")
+    public String newsDetail(@PathVariable("newsId") int newsId,
+                             Model model){
+        News news = newsService.getById(newsId);
+        if(news!=null){
+            //评论
+        }
+
+        model.addAttribute("news", news);
+        model.addAttribute("owner", userService.getUser(news.getUserId()));
+        return "detail";
+    }
+
 }

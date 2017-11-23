@@ -72,8 +72,8 @@ public class News {
         return createDate;
     }
 
-    public void setCreateDate(Date createdDate) {
-        this.createDate = createdDate;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public int getUserId() {

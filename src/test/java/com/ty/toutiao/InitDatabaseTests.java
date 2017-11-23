@@ -1,11 +1,10 @@
 package com.ty.toutiao;
 
+import com.ty.toutiao.dao.CommentDAO;
 import com.ty.toutiao.dao.LoginTicketDAO;
 import com.ty.toutiao.dao.NewsDAO;
 import com.ty.toutiao.dao.UserDAO;
-import com.ty.toutiao.model.LoginTicket;
-import com.ty.toutiao.model.News;
-import com.ty.toutiao.model.User;
+import com.ty.toutiao.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,9 @@ public class InitDatabaseTests {
     @Autowired
     LoginTicketDAO loginTicketDAO;
 
+    @Autowired
+    CommentDAO commentDAO;
+
     @Test
     public void contextLoads(){
             Random random = new Random();
@@ -52,6 +54,17 @@ public class InitDatabaseTests {
                 news.setTitle(String.format("TITLE{%d}", i));
                 news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
                 newsDAO.addNews(news);
+
+                for(int j=0;j<3;++j){
+                    Comment comment = new Comment();
+                    comment.setUserId(i+1);
+                    comment.setEntityId(news.getId());
+                    comment.setEntityType(EntityType.ENTITY_NEWS);
+                    comment.setStatus(0);
+                    comment.setCreateDate(new Date());
+                    comment.setContent("Comment " + String.valueOf(j));
+                    commentDAO.addComment(comment);
+                }
 
                 LoginTicket ticket = new LoginTicket();
                 ticket.setStatus(0);
