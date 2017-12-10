@@ -48,4 +48,12 @@ public class NewsService {
                 StandardCopyOption.REPLACE_EXISTING);
         return MyUtil.TOUTIAO_DOMAIN + "image?name=" + fileName;
     }
+
+    public int updateCommentCount(int id, int count) {
+        return newsDAO.updateCommentCount(id, count);
+    }
+
+    public int updateLikeCount(int id, int count) {
+        return newsDAO.updateLikeCount(id, count);
+    }
 }

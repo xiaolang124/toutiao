@@ -1,7 +1,7 @@
 package com.ty.toutiao.controller;
 
-import com.ty.toutiao.model.HostHolder;
-import com.ty.toutiao.model.News;
+import com.ty.toutiao.model.*;
+import com.ty.toutiao.service.CommentService;
 import com.ty.toutiao.service.NewsService;
 import com.ty.toutiao.service.QiniuService;
 import com.ty.toutiao.service.UserService;
@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
@@ -21,7 +22,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class NewsController {
@@ -38,9 +41,12 @@ public class NewsController {
     HostHolder hostHolder;
 
     @Autowired
+    CommentService commentService;
+
+    @Autowired
     QiniuService qiniuService;
 
-    @RequestMapping("/user/addNews/")
+    @RequestMapping("/user/addNews")
     @ResponseBody
     public String addNews(@RequestParam("image") String image,
                           @RequestParam("title") String title,
@@ -108,12 +114,48 @@ public class NewsController {
                              Model model){
         News news = newsService.getById(newsId);
         if(news!=null){
-            //评论
+            List<Comment> comments = commentService.getCommentsByEntity(news.getId(),
+                    EntityType.ENTITY_NEWS);
+            List<ViewObject> commentVOs = new ArrayList<>();
+            for(Comment comment:comments){
+                ViewObject vo = new ViewObject();
+                vo.set("comment", comment);
+                vo.set("user", userService.getUser(comment.getUserId()));
+                commentVOs.add(vo);
+            }
+            model.addAttribute("comments", commentVOs);
+            model.addAttribute("len",comments.size());
         }
 
         model.addAttribute("news", news);
         model.addAttribute("owner", userService.getUser(news.getUserId()));
         return "detail";
     }
+
+    @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
+    public String addComment(@RequestParam("newsId") int newsId,
+                             @RequestParam("content") String content) {
+        try {
+            content = HtmlUtils.htmlEscape(content);
+            // 过滤content
+            Comment comment = new Comment();
+            comment.setUserId(hostHolder.getUser().getId());
+            comment.setContent(content);
+            comment.setEntityId(newsId);
+            comment.setEntityType(EntityType.ENTITY_NEWS);
+            comment.setCreateDate(new Date());
+            comment.setStatus(0);
+
+            commentService.addComment(comment);
+            // 更新news里的评论数量
+            int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
+            newsService.updateCommentCount(comment.getEntityId(), count);
+            // 怎么异步化
+        } catch (Exception e) {
+            logger.error("增加评论失败" + e.getMessage());
+        }
+        return "redirect:/news/" + String.valueOf(newsId);
+    }
+
 
 }

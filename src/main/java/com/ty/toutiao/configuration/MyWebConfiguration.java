@@ -19,7 +19,7 @@ public class MyWebConfiguration extends WebMvcConfigurerAdapter{
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(passportInterceptor);
-        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/setting*");
+        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/setting*","/addComment");
         super.addInterceptors(registry);
     }
 }

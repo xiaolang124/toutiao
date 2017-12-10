@@ -25,14 +25,14 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/register/")
+    @RequestMapping("/register")
     @ResponseBody
     public String register(Model model,
-                      @RequestParam("userName") String userName,
+                      @RequestParam("username") String username,
                       @RequestParam("password") String password,
                       @RequestParam(value = "remember", defaultValue = "0") int remember){
         try{
-            Map<String, Object> map = userService.register(userName,password);
+            Map<String, Object> map = userService.register(username,password);
             if(map.isEmpty()){
                 return MyUtil.getJSONString(0, "注册成功");
             }else{
@@ -44,15 +44,15 @@ public class LoginController {
         }
     }
 
-    @RequestMapping("/login/")
+    @RequestMapping("/login")
     @ResponseBody
     public String login(Model model,
-                        @RequestParam("userName") String userName,
+                        @RequestParam("username") String username,
                         @RequestParam("password") String password,
                         @RequestParam(value = "remember", defaultValue = "0") int remember,
                         HttpServletResponse response){
         try{
-            Map<String, Object> map = userService.login(userName,password);
+            Map<String, Object> map = userService.login(username,password);
             if(map.containsKey("ticket")){
                 Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
@@ -71,7 +71,7 @@ public class LoginController {
     }
 
 
-    @RequestMapping("/logout/")
+    @RequestMapping("/logout")
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
         return "redirect:/";
